@@ -1,0 +1,22 @@
+# Use the official lightweight Python image.
+FROM python:3.11.4-slim
+
+# Set the working directory in the container.
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app.
+COPY . /app
+
+# Set environment variables
+ENV MLFLOW_TRACKING_URI="http://mlflow:5001"
+ENV VECTORIZER_PATH="/app/models/count_vectorizer.pkl"
+
+
+# Install the required packages.
+RUN pip install --no-cache-dir mlflow flask pandas requests optuna nltk scikit-learn emoji  psutil==5.9.8
+
+# Expose port 5001 for the Flask app.
+EXPOSE 5001
+
+# Run app.py when the container launches.
+CMD ["python", "app.py"]

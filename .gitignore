@@ -1,0 +1,40 @@
+# Ignore editor and IDE files
+.vscode/
+.idea/
+
+**__pycache__
+
+# Ignore compiled binaries and libraries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Ignore build output directories
+/bin/
+/build/
+/dist/
+
+# Ignore package manager directories
+/node_modules/
+/vendor/
+
+# Ignore log files
+*.log
+
+# Ignore temporary files
+*.tmp
+*.swp
+*.bak
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore .venvs
+.venv/
+
+# Ignore data
+data/
+mlruns/
+models/

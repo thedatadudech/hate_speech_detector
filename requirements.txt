@@ -1,0 +1,16 @@
+pandas
+nltk
+emoji
+numpy
+scikit-learn
+mlflow
+evidently
+pytest
+black
+pre-commit
+optuna
+evidently
+gradio
+flask
+requests
+

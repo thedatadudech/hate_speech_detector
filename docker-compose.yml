@@ -1,0 +1,85 @@
+version: "3.8"
+
+services:
+  sqlite:
+    image: nouchka/sqlite3
+    volumes:
+      - ./data/mlflow.db:/data/mlflow.db/Users/abdullahmarkus/VSProjects/mlops/.env.dev
+  mlflow:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.mlflow
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./db:/db
+      - ./data/artifacts:/data/artifacts
+    depends_on:
+      - sqlite
+    networks:
+      - app-network
+  mage:
+    env_file:
+      - .env.dev
+    build:
+      context: .
+    command: /app/run_app.sh mage start HATE_SPEECH_DETECTOR
+    ports:
+      - 6789:6789
+    volumes:
+      # Mount your local codebase to the container.
+      - .:/home/src/HATE_SPEECH_DETECTOR
+      # Store the data output on local machine to easily debug (optional).
+      - ~/.mage_data:/home/src/HATE_SPEECH_DETECTOR/mage_data
+      # Initial credentials to create an IAM user with limited permissions for deployment.
+      - ~/.aws:/root/.aws
+      # Local machine’s SSH keys to pull and push to your GitHub repository.
+      - ~/.ssh:/root/.ssh:ro
+      # Local machine’s GitHub configs
+      - ~/.gitconfig:/root/.gitconfig:ro
+    restart: on-failure:5
+    networks:
+      - app-network
+    depends_on:
+      - magic-database
+    stdin_open: true # used for interactive debugging
+    tty: true # used for interactive debugging
+  magic-database:
+    image: pgvector/pgvector:0.6.0-pg16
+    env_file:
+      - .env.dev
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/.postgres/data:/var/lib/postgresql/data
+      # Custom database initialization scripts (optional).
+      - ./scripts/database:/docker-entrypoint-initdb.d
+    restart: always
+    networks:
+      - app-network
+  flask_app:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.flask
+    ports:
+      - "8000:5002"
+    volumes:
+      - ./models:/app/models
+      - ./data/artifacts:/app/data/artifacts
+    depends_on:
+      - mlflow
+    networks:
+      - app-network
+  gradio:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.gradio
+    ports:
+      - "7860:7860"
+    depends_on:
+      - flask_app
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
