@@ -1,0 +1,1 @@
+{"Unnamed: 0": "int64", "count": "int64", "hate_speech": "int64", "offensive_language": "int64", "neither": "int64", "class": "int64", "tweet": "str"}

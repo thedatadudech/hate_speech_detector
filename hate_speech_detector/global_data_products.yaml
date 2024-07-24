@@ -1,0 +1,13 @@
+sklearn_training:
+  object_type: pipeline
+  object_uuid: sklearn_training
+  repo_path: /home/src/hate_speech_detector
+  settings:
+    sklearn: {}
+training_set:
+  object_type: pipeline
+  object_uuid: dataprep
+  repo_path: /home/src/hate_speech_detector
+  settings:
+    build:
+      partitions: 1

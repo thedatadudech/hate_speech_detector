@@ -1,0 +1,1 @@
+{"module": "sklearn.feature_extraction.text", "name": "CountVectorizer", "type": "instance", "uuid": "sklearn.feature_extraction.text.CountVectorizer", "hash": "0x7f7814dc0250", "variable_type": "model_sklearn"}

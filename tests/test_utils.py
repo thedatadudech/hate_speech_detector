@@ -1,6 +1,14 @@
-import os, sys
+import sys, os
 
-sys.path.append(os.getenv("SRC_PATH"))
+# Aktuellen Dateipfad ermitteln
+current_file_path = os.path.abspath(__name__)
+
+# Übergeordneten Ordner ermitteln
+parent_directory = os.path.dirname(os.path.dirname(current_file_path))
+
+# Pfad zum 'src' Unterordner hinzufügen
+src_path = os.path.join(parent_directory, "src")
+sys.path.append(src_path)
 
 from utils import clean
 

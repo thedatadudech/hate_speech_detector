@@ -1,0 +1,10 @@
+pandas
+nltk
+hyperopt
+numpy
+scikit-learn
+mlflow
+flask
+requests
+
+
