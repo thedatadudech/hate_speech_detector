@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://hatespeechdetector.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_add78539768f4955afe947bc0ba1a836 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_ccfdaabe26784f4688f78174dfe17904 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_1c252847769243dfab96605c190e92ba }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_f4fc489824554d64a6508495d81a42e0 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: hatespeechdetector.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_add78539768f4955afe947bc0ba1a836 }}/hatespeech-mage:${{ github.sha }}
+        tags: hatespeechdetector.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1c252847769243dfab96605c190e92ba }}/hatespeech-mage:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'hatespeech-mage-dev'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_3108624cd153401ab4725800b9f2afac }}
-        images: 'hatespeechdetector.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_add78539768f4955afe947bc0ba1a836 }}/hatespeech-mage:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_4370d2837d5841ceb55c21a3893c3d16 }}
+        images: 'hatespeechdetector.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1c252847769243dfab96605c190e92ba }}/hatespeech-mage:${{ github.sha }}'
