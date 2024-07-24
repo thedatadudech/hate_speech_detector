@@ -1,10 +1,19 @@
 FROM mageai/mageai:latest
 
-ARG USER_CODE_PATH=/home/src/${PROJECT_NAME}
+ARG USER_CODE_PATH=/home/src/hate_speech_detector
+ARG PROJECT_NAME=hate_speech_detector
+
+WORKDIR ${USER_CODE_PATH}
 
 # Note: this overwrites the requirements.txt file in your new project on first run. 
 # You can delete this line for the second run :) 
-COPY requirements_mage.txt ${USER_CODE_PATH}/requirements.txt 
+COPY ./mage_data/ ./mage_data/
+COPY ./hate_speech_detector/ .
+COPY requirements_mage.txt ./requirements.txt
 
-RUN pip3 install -r ${USER_CODE_PATH}/requirements.txt
+RUN pip3 install -r ./requirements.txt
+ENV PYTHONPATH="${PYTHONPATH}:${MAGE_CODE_PATH}/${PROJECT_NAME}"
+
 RUN python3 -c "import nltk; nltk.download('stopwords');"
+
+CMD ["/bin/sh", "-c", "/app/run_app.sh"]

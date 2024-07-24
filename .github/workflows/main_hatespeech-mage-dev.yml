@@ -11,41 +11,58 @@ on:
 
 jobs:
   build:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Log in to registry
-      uses: docker/login-action@v2
-      with:
-        registry: https://hatespeechdetector.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_1c252847769243dfab96605c190e92ba }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_f4fc489824554d64a6508495d81a42e0 }}
+      - name: Log in to registry
+        uses: docker/login-action@v2
+        with:
+          registry: https://hatespeechdetector.azurecr.io/
+          username: ${{ secrets.AzureAppService_ContainerUsername_29db9b1764a9425d95a438217639f558 }}
+          password: ${{ secrets.AzureAppService_ContainerPassword_ff3fcdf3b62940b28fa7d4ceb255e366 }}
 
-    - name: Build and push container image to registry
-      uses: docker/build-push-action@v3
-      with:
-        push: true
-        tags: hatespeechdetector.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1c252847769243dfab96605c190e92ba }}/hatespeech-mage:${{ github.sha }}
-        file: ./Dockerfile
+      - name: Set up Docker Compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+        env:
+          PROJECT_NAME: "hate_speech_detector"
+          MAGE_CODE_PATH: "/home/src"
+          MAGE_DATABASE_CONNECTION_URL: ${{secrets.MAGE_DATABASE_CONNECTION_URL}}
+          PYTHONPATH: "/home/src/hate_speech_detector"
+
+      - name: Build Docker images with Docker Compose
+        run: docker-compose -f docker-compose.yml build
+
+      - name: List images
+        run: docker images
+
+      - name: Tag and Push mage Docker image
+        run: |
+          docker tag hate_speech_detector_mage:latest hatespeechdetector.azurecr.io/hatespeech-mage:${{ github.sha }}
+          docker push hatespeechdetector.azurecr.io/hatespeech-mage:${{ github.sha }}
+
+      # - name: Tag and Push mlflow Docker image
+      #   run: |
+      #     docker hate_speech_detector_mlflow:latest  hatespeechdetector.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_29db9b1764a9425d95a438217639f558 }}/hatespeech-mlflow:latest${{ github.sha }}
+      #     docker push hatespeechdetector.azurecr.io/${{secrets.AzureAppService_ContainerUsername_21f0839a5c084350921d3447b3afcf3d }}/hatespeech-mlflow:latest${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'production'
+      name: "production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'hatespeech-mage-dev'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_4370d2837d5841ceb55c21a3893c3d16 }}
-        images: 'hatespeechdetector.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_1c252847769243dfab96605c190e92ba }}/hatespeech-mage:${{ github.sha }}'
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "hatespeech-mage-dev"
+          slot-name: "production"
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_5674d72a6f7b4b41bf7d229b6c8d80b9 }}
+          images: "hatespeechdetector.azurecr.io/hatespeech-mage:${{ github.sha }}"

@@ -13,18 +13,15 @@ services:
     networks:
       - app-network
   mage:
-    image: mageai/mageai:latest
-    command: mage start ${PROJECT_NAME}
     env_file:
-      - .env.dev
+      - .env
     build:
       context: .
       dockerfile: Dockerfile.mage
     ports:
       - 6789:6789
     volumes:
-      - .:/home/src/
-    restart: on-failure:5
+      - ./mage_data:/home/src/hate_speech_detector/mage_data
     networks:
       - app-network
   # flask_app:

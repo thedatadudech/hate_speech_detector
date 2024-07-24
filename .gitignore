@@ -41,6 +41,5 @@ models/
 
 scripts/
 db/
-.env**
 .ssh_tunnel
 .file_versions

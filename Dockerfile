@@ -1,4 +1,4 @@
-FROM mageai/mageai:alpha
+FROM mageai/mageai:latest
 
 
 ARG PROJECT_NAME=${PROJECT_NAME}
