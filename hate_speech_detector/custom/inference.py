@@ -44,7 +44,6 @@ training_set: Tuple[
     """
     inputs : List[str] = kwargs.get('inputs', DEFAULT_INPUTS)
 
-
     
     # Specify your custom logic here
     cls, info_dict = model_sklearn["sklearn"]
@@ -57,7 +56,8 @@ training_set: Tuple[
     prediction= list(cls.predict(output2))
 
     
-
+    print(inputs)
+    print(prediction)
     return cls, info_dict, inputs, output1,  output2, prediction
 
 

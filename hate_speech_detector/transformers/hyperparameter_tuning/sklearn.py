@@ -28,10 +28,14 @@ def hyperparameter_tuning(
     Callable[..., BaseEstimator],
 ]:
 
+    
+    print (training_set)
    
     X, y, X_train, y_train, X_test, y_test, _ = training_set["build"]
 
     model_class = load_class(model_class_name[0][0])
+
+    
 
     hyperparameters = tune_hyperparameters(
         model_class,

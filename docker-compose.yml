@@ -3,7 +3,7 @@ version: "3.8"
 services:
   mlflow:
     build:
-      context: ./src
+      context: .
       dockerfile: Dockerfile.mlflow
     ports:
       - "5001:5001"
@@ -22,21 +22,20 @@ services:
       - 6789:6789
     volumes:
       - ./mage_data:/home/src/hate_speech_detector/mage_data
+      - ./hate_speech_detector:/home/src/hate_speech_detector
     networks:
       - app-network
-  # flask_app:
-  #   build:
-  #     context: ./src
-  #     dockerfile: Dockerfile.flask
-  #   ports:
-  #     - "8000:5002"
-  #   volumes:
-  #     - ./models:/app/models
-  #     - ./data/artifacts:/app/data/artifacts
-  #   depends_on:
-  #     - mlflow
-  #   networks:
-  #     - app-network
+  flask_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.flask
+    ports:
+      - "8000:5002"
+    volumes:
+      - ./models:/app/models
+      - ./data/artifacts:/app/data/artifacts
+    networks:
+      - app-network
   # gradio:
   #   build:
   #     context: ./src

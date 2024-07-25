@@ -45,10 +45,10 @@ jobs:
           docker tag hate_speech_detector_mage:latest hatespeechdetector.azurecr.io/hatespeech-mage:${{ github.sha }}
           docker push hatespeechdetector.azurecr.io/hatespeech-mage:${{ github.sha }}
 
-      # - name: Tag and Push mlflow Docker image
-      #   run: |
-      #     docker hate_speech_detector_mlflow:latest  hatespeechdetector.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_29db9b1764a9425d95a438217639f558 }}/hatespeech-mlflow:latest${{ github.sha }}
-      #     docker push hatespeechdetector.azurecr.io/${{secrets.AzureAppService_ContainerUsername_21f0839a5c084350921d3447b3afcf3d }}/hatespeech-mlflow:latest${{ github.sha }}
+      - name: Tag and Push mlflow Docker image
+        run: |
+          docker tag hate_speech_detector_mlflow:latest  hatespeechdetector.azurecr.io/hatespeech-mlflow:${{ github.sha }}
+          docker push hatespeechdetector.azurecr.io/hatespeech-mlflow:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -58,11 +58,20 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
+      - name: Deploy to Azure Web App mage
+        id: deploy-to-webapp-mage
         uses: azure/webapps-deploy@v2
         with:
           app-name: "hatespeech-mage-dev"
           slot-name: "production"
           publish-profile: ${{ secrets.AzureAppService_PublishProfile_5674d72a6f7b4b41bf7d229b6c8d80b9 }}
           images: "hatespeechdetector.azurecr.io/hatespeech-mage:${{ github.sha }}"
+
+      - name: Deploy to Azure Web App mlflow
+        id: deploy-to-webapp-mlflow
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "hatespeech-mlflow"
+          slot-name: "production"
+          publish-profile: ${{secrets.AzureAppService_PublishProfile_5674d72a6f7b4b41bf7d229b6c8d80b9 }}
+          images: "hatespeechdetector.azurecr.io/hatespeech-mlflow:${{ github.sha }}"

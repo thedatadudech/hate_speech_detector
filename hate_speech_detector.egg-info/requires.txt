@@ -1,0 +1,12 @@
+pandas
+scikit-learn
+mlflow
+evidently
+nltk
+emoji
+numpy
+scikit-learn
+optuna
+gradio
+flask
+requests
