@@ -23,6 +23,7 @@ services:
     volumes:
       - ./mage_data:/home/src/hate_speech_detector/mage_data
       - ./hate_speech_detector:/home/src/hate_speech_detector
+      - ./data/artifacts/mlruns:/home/src/mlruns
     networks:
       - app-network
   flask_app:

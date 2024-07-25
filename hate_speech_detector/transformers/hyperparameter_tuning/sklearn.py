@@ -29,7 +29,7 @@ def hyperparameter_tuning(
 ]:
 
     
-    print (training_set)
+    
    
     X, y, X_train, y_train, X_test, y_test, _ = training_set["build"]
 

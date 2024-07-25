@@ -46,7 +46,7 @@ blocks:
   language: python
   name: hyperparameter_tuning/sklearn
   retry_config: null
-  status: executed
+  status: updated
   timeout: null
   type: transformer
   upstream_blocks:

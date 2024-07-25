@@ -73,5 +73,5 @@ jobs:
         with:
           app-name: "hatespeech-mlflow"
           slot-name: "production"
-          publish-profile: ${{secrets.AzureAppService_PublishProfile_5674d72a6f7b4b41bf7d229b6c8d80b9 }}
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_d683ce1e2ea74692966617ddcbacb468 }}
           images: "hatespeechdetector.azurecr.io/hatespeech-mlflow:${{ github.sha }}"
