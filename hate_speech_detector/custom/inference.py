@@ -55,9 +55,7 @@ training_set: Tuple[
 
     prediction= list(cls.predict(output2))
 
-    
-    print(inputs)
-    print(prediction)
+ 
     return cls, info_dict, inputs, output1,  output2, prediction
 
 

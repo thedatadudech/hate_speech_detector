@@ -21,7 +21,7 @@ services:
     ports:
       - 6789:6789
     volumes:
-      - ./mage_data:/home/src/hate_speech_detector/mage_data
+      - .hate_speech_detector/mage_data:/home/src/hate_speech_detector/mage_data
       - ./hate_speech_detector:/home/src/hate_speech_detector
       - ./data/artifacts/mlruns:/home/src/mlruns
     networks:
