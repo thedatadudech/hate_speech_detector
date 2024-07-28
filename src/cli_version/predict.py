@@ -15,8 +15,12 @@ def predict(text):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Predict hate speech from input text")
-    parser.add_argument("--text", type=str, default="We have Trump in the bullseye")
+    parser = argparse.ArgumentParser(
+        description="Predict hate speech from input text"
+    )
+    parser.add_argument(
+        "--text", type=str, default="We have Trump in the bullseye"
+    )
     args = parser.parse_args()
     prediction = predict(args.text)
     print(f"The text {args.text} is predicted: {prediction}")

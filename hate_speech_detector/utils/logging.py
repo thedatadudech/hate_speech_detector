@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from mlflow.data import from_numpy, from_pandas
 from mlflow.entities import DatasetInput, InputTag, Run
-from mlflow.models import infer_signature, signature
+from mlflow.models import infer_signature
 from mlflow.sklearn import log_model as log_model_sklearn
 from sklearn.base import BaseEstimator
 from sklearn.tree import DecisionTreeClassifier
@@ -14,10 +14,16 @@ from sklearn.model_selection import cross_val_score
 
 DEFAULT_DEVELOPER = os.getenv("EXPERIMENTS_DEVELOPER", "mager")
 DEFAULT_EXPERIMENT_NAME = "hate_speech_mage"
-DEFAULT_TRACKING_URI = "postgresql+psycopg2://hatespeechadmin:admin0815!@hate-speech-pg.postgres.database.azure.com:5432/mlflow"
-DEFAULT_ARTIFACT_LOCATION = os.getenv("DEFAULT_ARTIFACT_LOCATION", "/data/artifacts")
-# Testing the parameters on testset
+DEFAULT_TRACKING_URI = (
+    "postgresql+psycopg2://"
+    "hatespeechadmin:admin0815!"
+    "@hate-speech-pg.postgres.database.azure.com:5432/mlflow"
+)
 
+DEFAULT_ARTIFACT_LOCATION = os.getenv(
+    "DEFAULT_ARTIFACT_LOCATION", "/data/artifacts"
+)
+# Testing the parameters on testset
 
 def setup_experiment(
     experiment_name: Optional[str] = None,
@@ -53,7 +59,9 @@ def launch_objective(X_train, y_train, X_test, y_test):
         max_depth = trial.suggest_int("max_depth", 1, 50)
         min_samples_split = trial.suggest_int("min_samples_split", 2, 100)
         min_samples_leaf = trial.suggest_int("min_samples_leaf", 1, 50)
-        max_features = trial.suggest_categorical("max_features", ["sqrt", "log2", None])
+        max_features = trial.suggest_categorical(
+            "max_features", ["sqrt", "log2", None]
+        )
         max_leaf_nodes = (
             trial.suggest_int("max_leaf_nodes", 2, 200)
             if trial.suggest_categorical("max_leaf_nodes_enable", [True, False])
@@ -198,7 +206,9 @@ def track_experiment(
                     dataset_from = from_numpy
 
                 if dataset_from:
-                    ds = dataset_from(dataset, name=dataset_name)._to_mlflow_entity()
+                    ds = dataset_from(
+                        dataset, name=dataset_name
+                    )._to_mlflow_entity()
                     ds_input = DatasetInput(
                         ds, tags=[InputTag(k, v) for k, v in tags.items()]
                     )
@@ -210,7 +220,8 @@ def track_experiment(
                         print(f"Logged input for {context} {dataset_name}.")
                     else:
                         print(
-                            f"Unable to log input for {context} {dataset_name}, "
+                            f"Unable to log input for {context} {dataset_name},"
+
                             f"{type(dataset)} not registered."
                         )
 
@@ -227,7 +238,9 @@ def track_experiment(
                 opts = dict(artifact_path="models", input_example=None)
 
                 if training_set is not None and predictions is not None:
-                    opts["signature"] = infer_signature(training_set, predictions)
+                    opts["signature"] = infer_signature(
+                        training_set, predictions
+                    )
 
                 log_model(model, **opts)
                 if verbosity:

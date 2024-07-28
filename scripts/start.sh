@@ -1,6 +1,8 @@
 
+#Starter script file to load environmental variables, please fill out the TODO: with your credentials
+ 
 
-#docker rmi $(docker images -f "dangling=true" -q)
+docker rmi $(docker images -f "dangling=true" -q)
 
   
 export PROJECT_NAME=hate_speech_detector 

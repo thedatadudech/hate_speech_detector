@@ -1,12 +1,11 @@
-from typing import Callable, Dict, Tuple, Union
+
+from typing import Dict, Union
 
 from pandas import Series
 from scipy.sparse._csr import csr_matrix
-from sklearn.base import BaseEstimator
 
 
 from hate_speech_detector.utils.models.sklearn import (
-    load_class,
     tune_hyperparameters_optuna,
 )
 from hate_speech_detector.utils.logging import launch_objective
@@ -18,17 +17,14 @@ if "transformer" not in globals():
 @transformer
 def hyperparameter_tuning(
     training_set: Dict[str, Union[Series, csr_matrix]],
-    model_class_name: str,
     *args,
     **kwargs,
-) :
-
+):
 
     X, y, X_train, y_train, X_test, y_test, _ = training_set["build"]
-
-    model_class = load_class(model_class_name[0][0])
 
     objective = launch_objective(X_train, y_train, X_test, y_test)
     best_model = tune_hyperparameters_optuna(objective)
 
-    return  X,y, best_model
+    return X, y, best_model
+

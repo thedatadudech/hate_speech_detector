@@ -1,9 +1,9 @@
-
-
-if 'custom' not in globals():
+if "custom" not in globals():
     from mage_ai.data_preparation.decorators import custom
-if 'test' not in globals():
+if "test" not in globals():
     from mage_ai.data_preparation.decorators import test
+
+
 
 @custom
 def transform_custom(*args, **kwargs):
@@ -13,13 +13,10 @@ def transform_custom(*args, **kwargs):
     Returns:
         Anything (e.g. data frame, dictionary, array, int, str, etc.)
     """
-    # Specify your custom logic here
-    
     if args[0][0]:
         print(f"The model uri is: {args[0][1]}")
-       
 
-    return args
+      return args
 
 
 @test
@@ -27,4 +24,5 @@ def test_output(output, *args) -> None:
     """
     Template code for testing the output of the block.
     """
-    assert output is not None, 'The output is undefined'
+    assert output is not None, "The output is undefined"
+

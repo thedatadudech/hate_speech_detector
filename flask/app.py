@@ -6,7 +6,10 @@ from flask import Flask, request, jsonify, redirect, url_for
 from flasgger import Swagger, swag_from
 
 
-bestmodel_path = os.getenv("BESTMODEL_PATH", "/data/mlmodel/hate_speech_detector")
+
+bestmodel_path = os.getenv(
+    "BESTMODEL_PATH", "/data/mlmodel/hate_speech_detector"
+)
 vectorizer_path = os.getenv(
     "VECTORIZER_PATH", "/data/cv/hate_speech_detector/cv_best_model.pkl"
 )

@@ -22,7 +22,8 @@ def load_data(*args, **kwargs):
 
     # Fetch all runs in the experiment
     experiment_name = DEFAULT_EXPERIMENT_NAME
-    print("Experiment with name:" , experiment_name)
+
+    print("Experiment with name:", experiment_name)
 
     print("Connecting with MlFlowclient on : ", MLFLOW_TRACKING_URI)
     client = MlflowClient(MLFLOW_TRACKING_URI)
@@ -58,14 +59,16 @@ def load_data(*args, **kwargs):
         if is_registered:
             best_model_uri = f"runs:/{best_run_id}/model"
             print(
-                f"A model with run ID '{best_run_id}' is already registered as '{model_name}'."
+                f"""A model with run ID {str(best_model_uri)} is already
+                  registered as {str(model_name)}"""
             )
         else:
             # Register the best model
             best_model_uri = f"runs:/{best_run_id}/model"
             mlflow.register_model(model_uri=best_model_uri, name=model_name)
             print(
-                f"Registered the model '{model_name}' with accuracy {best_run_accuracy}."
+                f"""Registered the model '{model_name}' \
+                    with accuracy {best_run_accuracy}."""
             )
     else:
         print("No runs found in the experiment.")

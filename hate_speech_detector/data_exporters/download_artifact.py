@@ -36,7 +36,11 @@ def export_data(response, training_set, *args, **kwargs):
         mlflow.artifacts.download_artifacts(
             artifact_uri=best_model_uri, dst_path=DESTINATION_PATH_BEST_MODEL
         )
-        model = mlflow.sklearn.load_model(DESTINATION_PATH_BEST_MODEL + "/model")
+
+        model = mlflow.sklearn.load_model(
+            DESTINATION_PATH_BEST_MODEL + "/model"
+        )
+
         model.fit(X, y)
         joblib.dump(
             model, DESTINATION_PATH_BEST_MODEL + "/model/best_model_fittedX.pkl"
