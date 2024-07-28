@@ -11,19 +11,17 @@ if 'data_exporter' not in globals():
 
 
 @data_exporter
-def train(
+def register(
     settings: Tuple[
         Dict[str, Union[bool, float, int, str]],
         csr_matrix,
         Series,
-        Dict[str, Union[Callable[..., BaseEstimator], str]],
+        BaseEstimator,
     ],
     **kwargs,
 ) -> Tuple[BaseEstimator, Dict[str, str]]:
-    hyperparameters, X, y, model_info = settings
+    X, y, model = settings
 
-    model_class = model_info['cls']
-    model = model_class(**hyperparameters)
     model.fit(X, y)
 
-    return model, model_info
+    return model
