@@ -25,7 +25,6 @@ DEFAULT_ARTIFACT_LOCATION = os.getenv(
 )
 # Testing the parameters on testset
 
-
 def setup_experiment(
     experiment_name: Optional[str] = None,
     tracking_uri: Optional[str] = None,
@@ -222,6 +221,7 @@ def track_experiment(
                     else:
                         print(
                             f"Unable to log input for {context} {dataset_name},"
+
                             f"{type(dataset)} not registered."
                         )
 

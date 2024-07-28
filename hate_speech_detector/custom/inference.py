@@ -51,6 +51,7 @@ def predict(
 
     _, _, _, _, _, _, cv = training_set["build"]
 
+
     output1 = list(map(clean, inputs))
 
     output2 = cv.transform(output1)
@@ -58,6 +59,7 @@ def predict(
     prediction = list(cls.predict(output2))
 
     return cls, inputs, output1, output2, prediction
+
 
 
 @test

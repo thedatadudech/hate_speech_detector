@@ -3,6 +3,7 @@
  
 
 docker rmi $(docker images -f "dangling=true" -q)
+
   
 export PROJECT_NAME=hate_speech_detector 
 export MAGE_CODE_PATH=/home/src 
