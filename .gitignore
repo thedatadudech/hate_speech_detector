@@ -39,7 +39,8 @@ data/
 mlruns/
 models/
 
-scripts/
+scripts/**/*
+!scripts/start.sh
 db/
 .ssh_tunnel
 .file_versions

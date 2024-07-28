@@ -11,7 +11,9 @@ import mlflow
 
 
 def extract_features(df: pd.DataFrame, column: str) -> pd.DataFrame:
-    features_df = df[column].apply(extract_tweet_features).apply(pd.Series).fillna(0)
+    features_df = (
+        df[column].apply(extract_tweet_features).apply(pd.Series).fillna(0)
+    )
     df = pd.concat([df, features_df], axis=1)
     return df
 
@@ -28,8 +30,8 @@ def vectorize_tweets(
             print("Reading tweets from path:", path)
             df = pd.read_csv(path)
             print("Tweets succesfully read")
-        except:
-            print("could not read tweets from path")
+        except Exception as e:
+            print(f"Unexpected error {e} , could not read tweets from path")
     df = df.dropna()
     x = np.array(df[tweet_column])
     X = cv.fit_transform(x)
@@ -38,8 +40,8 @@ def vectorize_tweets(
     try:
         print("logging artifact")
         mlflow.log_artifact(VECTORIZER_PATH)
-    except:
-        print("artifact could not be logged")
+    except Exception as e:
+        print(f"Error {e} :, artifact could not be logged")
     return X, y
 
 
@@ -51,8 +53,8 @@ def save_count_vectorizer(cv, path):
             cv_dict["cv"] = cv
             joblib.dump(cv_dict, file)
             print("vectorizer saved succesfully")
-    except:
-        print("Could not save vectorizer")
+    except Exception as e:
+        print(f"Error {e} Could not save vectorizer")
         return False
     return True
 
@@ -119,7 +121,8 @@ def extract_tweet_features(tweet: str) -> dict:
     # features.update(word_freq)
 
     # Presence of Hate Speech Words
-    # hate_speech_count = sum(word.lower() in hate_speech_words for word in words)
+    # hate_speech_count = sum(word.lower() in hate_speech_words
+    #                                               for word in words)
     # features["hate_speech_word_count"] = hate_speech_count
 
     return features

@@ -1,15 +1,25 @@
 FROM mageai/mageai:alpha
 
-ARG USER_CODE_PATH=/home/src/hate_speech_detector
+
 ARG PROJECT_NAME=hate_speech_detector
 ARG MAGE_CODE_PATH=/home/src
+ARG USER_CODE_PATH=${MAGE_CODE_PATH}/${PROJECT_NAME}
+ARG DESTINATION_PATH_BEST_MODEL=$DESTINATION_PATH_BEST_MODEL
+ARG MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
+
+#Tracking Uri for Mlflow
+ENV MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI}
+ENV USER_CODE_PATH=${USER_CODE_PATH}
+
+
+#Destination folders for output
+ENV DESTINATION_PATH_BEST_MODEL=${DESTINATION_PATH_BEST_MODEL}
+
 
 WORKDIR ${MAGE_CODE_PATH}
 
 # Note: this overwrites the requirements.txt file in your new project on first run. 
 # You can delete this line for the second run :) 
-COPY ./mage_data/ .${USER_CODE_PATH}/mage_data/
-COPY ./hate_speech_detector/ ${PROJECT_NAME}/
 COPY requirements_mage.txt ./requirements.txt
 
 RUN pip3 install -r ./requirements.txt

@@ -1,4 +1,3 @@
-import pandas
 from sklearn.metrics import classification_report, accuracy_score
 import mlflow
 import mlflow.sklearn

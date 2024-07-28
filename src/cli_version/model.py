@@ -55,7 +55,8 @@ def train_model(X, y, opt):
 def check_model_registered(client, model_name):
     try:
         client.get_registered_model(name=model_name)
-    except:
+    except Exception as e:
+        print(f"Error {e} occured")
         return False
     return True
 

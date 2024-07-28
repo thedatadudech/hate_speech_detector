@@ -6,5 +6,6 @@ scikit-learn
 mlflow
 flask
 requests
+optuna
 
 

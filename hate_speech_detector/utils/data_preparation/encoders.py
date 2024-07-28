@@ -1,6 +1,6 @@
-
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
+
 
 def initialize_count_vectorizer():
     cv = CountVectorizer()
@@ -16,9 +16,6 @@ def vectorize_tweets(
     df = df.dropna()
     x = np.array(df[tweet_column])
     X = cv.fit_transform(x)
-    y =df[label_column] 
+    y = df[label_column]
 
-  
-
-    return X,y, cv
-
+    return X, y, cv

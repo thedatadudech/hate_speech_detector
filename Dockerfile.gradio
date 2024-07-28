@@ -5,7 +5,7 @@ FROM python:3.11.4-slim
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app.
-COPY . /app
+COPY ./gradio /app
 
 # Install the required packages.
 RUN pip install --no-cache-dir gradio requests

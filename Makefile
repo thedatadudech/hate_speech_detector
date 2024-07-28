@@ -3,13 +3,13 @@ install:
 	python setup.py install
 
 prepare:
-	python src/data_preparation.py	
+	python src/cli_version/data_preparation.py	
 
 model:
-	python src/model.py
+	python src/cli_version/model.py
 
 evaluate:
-	python src/evaluation.py
+	python src/cli_version/evaluation.py
 
 
 .PHONY: predict
@@ -27,6 +27,37 @@ all:
 	make predict
 
 
+#Dockerize images
+mage:
+	scripts/start.sh mage
+
+mlflow:
+	scripts/start.sh mage
+
+mage-build:
+	scripts/start.sh mage --build 
+
+mlflow-build:
+	scripts/start.sh mlflow --build
+
+flask-build:
+	scripts/start.sh flask --build
+
+gradio-build:
+	scripts/start.sh gradio --build
+
+compose-all-build:
+	scripts/start.sh --build
+
+
+
+#Cleaning section
+complete-cleaning:
+	scripts/cleaning_resources.sh
+
+
+
+#Tools section
 test:
 	pytest --disable-warnings 
 

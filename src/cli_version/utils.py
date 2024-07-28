@@ -11,12 +11,12 @@ def clean(text):
     stopword = set(stopwords.words("english"))
     stemmer = SnowballStemmer("english")
     text = str(text).lower()
-    text = re.sub("\[.*?\]", "", text)
-    text = re.sub("https?://\S+|www\.\S+", "", text)
-    text = re.sub("<.*?>+", "", text)
-    text = re.sub("[%s]" % re.escape(punctuation), "", text)
-    text = re.sub("\n", "", text)
-    text = re.sub("\w*\d\w*", "", text)
+    text = re.sub(r"\[.*?\]", "", text)
+    text = re.sub(r"https?://\S+|www\.\S+", "", text)
+    text = re.sub(r"<.*?>+", "", text)
+    text = re.sub(r"[%s]" % re.escape(punctuation), "", text)
+    text = re.sub(r"\n", "", text)
+    text = re.sub(r"\w*\d\w*", "", text)
     text = [word for word in text.split(" ") if word not in stopword]
     text = " ".join(text)
     text = [stemmer.stem(word) for word in text.split(" ")]
@@ -56,8 +56,8 @@ def load_mlflow_client():
     try:
         client = mlflow.MlflowClient(tracking_uri=MLFLOW_TRACKING_URI)
         print("client succesfully connected")
-    except:
-        print("client not connected")
+    except Exception as e:
+        print(f"Error {e} client not connected")
     return client
 
 

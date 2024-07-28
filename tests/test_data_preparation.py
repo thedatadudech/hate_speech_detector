@@ -1,14 +1,16 @@
-import os, sys
+import os
+import sys
 import pandas as pd
+from src.cli_version.data_preparation import preprocess_data
 
 sys.path.append(os.getenv("SRC_PATH"))
-
-from data_preparation import preprocess_data
 
 
 def test_preprocess_data():
     # Create a sample DataFrame for testing
-    df = pd.DataFrame({"tweet": ["This is a tweet", "Another tweet"], "class": [0, 1]})
+    df = pd.DataFrame(
+        {"tweet": ["This is a tweet", "Another tweet"], "class": [0, 1]}
+    )
 
     # Call the preprocess_data function
     processed_df = preprocess_data(df)

@@ -18,7 +18,9 @@ def launch_objective(X, y):
         max_depth = trial.suggest_int("max_depth", 1, 50)
         min_samples_split = trial.suggest_int("min_samples_split", 2, 100)
         min_samples_leaf = trial.suggest_int("min_samples_leaf", 1, 50)
-        max_features = trial.suggest_categorical("max_features", ["sqrt", "log2", None])
+        max_features = trial.suggest_categorical(
+            "max_features", ["sqrt", "log2", None]
+        )
         max_leaf_nodes = (
             trial.suggest_int("max_leaf_nodes", 2, 200)
             if trial.suggest_categorical("max_leaf_nodes_enable", [True, False])

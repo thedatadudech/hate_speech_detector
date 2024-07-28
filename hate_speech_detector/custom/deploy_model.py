@@ -1,5 +1,3 @@
-from typing import List, Dict
-
 if "custom" not in globals():
     from mage_ai.data_preparation.decorators import custom
 if "test" not in globals():
@@ -7,7 +5,7 @@ if "test" not in globals():
 
 
 @custom
-def models(*args, **kwargs):
+def transform_custom(*args, **kwargs):
     """
     args: The output from any upstream parent blocks (if applicable)
 
@@ -15,16 +13,11 @@ def models(*args, **kwargs):
         Anything (e.g. data frame, dictionary, array, int, str, etc.)
     """
     # Specify your custom logic here
-    model_names: str = kwargs.get("models", "tree.DecisionTreeClassifier")
-    child_data: List[str] = [
-        model_name.strip() for model_name in model_names.split(",")
-    ]
 
-    child_metadata: List[Dict] = [
-        dict(block_uuid=model_name.split(".")[-1]) for model_name in child_data
-    ]
+    if args[0][0]:
+        print(f"The model uri is: {args[0][1]}")
 
-    return child_data, child_metadata
+    return args
 
 
 @test

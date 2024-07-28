@@ -1,29 +1,26 @@
-from typing import Callable, Dict, Tuple, Union
+from typing import Dict, Tuple, Union
 
 from pandas import Series
 from scipy.sparse._csr import csr_matrix
 from sklearn.base import BaseEstimator
 
-from hate_speech_detector.utils.models.sklearn import load_class, train_model
 
-if 'data_exporter' not in globals():
+if "data_exporter" not in globals():
     from mage_ai.data_preparation.decorators import data_exporter
 
 
 @data_exporter
-def train(
+def register(
     settings: Tuple[
         Dict[str, Union[bool, float, int, str]],
         csr_matrix,
         Series,
-        Dict[str, Union[Callable[..., BaseEstimator], str]],
+        BaseEstimator,
     ],
     **kwargs,
 ) -> Tuple[BaseEstimator, Dict[str, str]]:
-    hyperparameters, X, y, model_info = settings
+    X, y, model = settings
 
-    model_class = model_info['cls']
-    model = model_class(**hyperparameters)
     model.fit(X, y)
 
-    return model, model_info
+    return model

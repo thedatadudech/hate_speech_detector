@@ -2,6 +2,8 @@ version: "3.8"
 
 services:
   mlflow:
+    env_file:
+      - .env.mlflow.dev
     build:
       context: .
       dockerfile: Dockerfile.mlflow
@@ -14,39 +16,41 @@ services:
       - app-network
   mage:
     env_file:
-      - .env
+      - .env.mage.dev
     build:
       context: .
       dockerfile: Dockerfile.mage
     ports:
       - 6789:6789
     volumes:
-      - .hate_speech_detector/mage_data:/home/src/hate_speech_detector/mage_data
+      - ./data/mage_data:/home/src/mage_data
       - ./hate_speech_detector:/home/src/hate_speech_detector
-      - ./data/artifacts/mlruns:/home/src/mlruns
+      - ./data/artifacts:/data/artifacts
+      - ./data/mlmodel/hate_speech_detector:/data/best_model/model
+      - ./data/cv/hate_speech_detector:/data/cv
     networks:
       - app-network
-  flask_app:
+  flask:
+    env_file:
+      - .env.flask.dev
     build:
       context: .
       dockerfile: Dockerfile.flask
     ports:
       - "8000:5002"
     volumes:
-      - ./models:/app/models
-      - ./data/artifacts:/app/data/artifacts
+      - ./data/cv:/data/cv
+      - ./data/mlmodel:/data/mlmodel
     networks:
       - app-network
-  # gradio:
-  #   build:
-  #     context: ./src
-  #     dockerfile: Dockerfile.gradio
-  #   ports:
-  #     - "7860:7860"
-  #   depends_on:
-  #     - flask_app
-  #   networks:
-  #     - app-network
+  gradio:
+    build:
+      context: .
+      dockerfile: Dockerfile.gradio
+    ports:
+      - "7860:7860"
+    networks:
+      - app-network
 networks:
   app-network:
     driver: bridge
