@@ -18,6 +18,9 @@ ENV DESTINATION_PATH_BEST_MODEL=${DESTINATION_PATH_BEST_MODEL}
 
 WORKDIR ${MAGE_CODE_PATH}
 
+
+COPY ./hate_speech_detector ./hate_speech_detector
+
 # Note: this overwrites the requirements.txt file in your new project on first run. 
 # You can delete this line for the second run :) 
 COPY requirements_mage.txt ./requirements.txt
