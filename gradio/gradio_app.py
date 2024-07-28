@@ -1,12 +1,17 @@
 import gradio as gr
 import requests
+import os
+
+hate_speech_predict_api = os.getenv(
+    "HATE_SPEECH_PREDICT_API", "http://flask:5002/predict"
+)
 
 
 # Define the function to send text to the MLflow model API and get the prediction
 def predict_hate_speech(text):
-    url = "http://flask_app:5002/predict"  # Adjust the URL if your API is hosted elsewhere
+    url = hate_speech_predict_api  # Adjust the URL if your API is hosted elsewhere
     # headers = {"Content-Type": "application/json"}
-    data = {"text": text}
+    data = {"inputs": text}
     print(data)
     response = requests.post(url, json=data)
     if response.status_code == 200:

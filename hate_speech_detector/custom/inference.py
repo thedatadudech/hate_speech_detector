@@ -46,7 +46,8 @@ training_set: Tuple[
 
     
     # Specify your custom logic here
-    cls, info_dict = model_sklearn["sklearn"]
+    cls = model_sklearn["sklearn"][0]
+    
     _,_,_,_,_,_,cv = training_set['build']
 
     output1 = list(map(clean, inputs))
@@ -56,7 +57,7 @@ training_set: Tuple[
     prediction= list(cls.predict(output2))
 
  
-    return cls, info_dict, inputs, output1,  output2, prediction
+    return cls, inputs, output1,  output2, prediction
 
 
 @test

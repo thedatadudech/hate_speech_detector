@@ -1,19 +1,20 @@
 # Use the official lightweight Python image.
 FROM python:3.11.4-slim
 
+
 # Set the working directory in the container.
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app.
-COPY . /app
+COPY /flask /app
 
 # Set environment variables
-ENV MLFLOW_TRACKING_URI="http://mlflow:5001"
-ENV VECTORIZER_PATH="/app/models/count_vectorizer.pkl"
+ENV MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
+ENV VECTORIZER_PATH=$VECTORIZER_PATH
 
 
 # Install the required packages.
-RUN pip install --no-cache-dir mlflow flask pandas requests optuna nltk scikit-learn emoji  psutil==5.9.8
+RUN pip install --no-cache-dir mlflow flask pandas requests flasgger joblib 
 
 # Expose port 5001 for the Flask app.
 EXPOSE 5001

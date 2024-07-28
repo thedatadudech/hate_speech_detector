@@ -2,71 +2,68 @@ blocks:
 - all_upstream_blocks_executed: true
   color: null
   configuration:
-    file_path: global_data_products/load_countvectorizer.py
     file_source:
-      path: null
-    global_data_product:
-      uuid: data_training_set_sklearn
+      path: data_loaders/register_best_model.py
   downstream_blocks:
-  - inference
+  - download_artifact
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: load countvectorizer
+  name: register_best_model
   retry_config: null
   status: executed
   timeout: null
-  type: global_data_product
+  type: data_loader
   upstream_blocks: []
-  uuid: load_countvectorizer
+  uuid: register_best_model
 - all_upstream_blocks_executed: true
   color: null
   configuration:
     global_data_product:
-      uuid: model_sklearn_estimator
+      uuid: data_training_set_sklearn
   downstream_blocks:
-  - inference
+  - download_artifact
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: load_estimator
+  name: data and count vectorizer
   retry_config: null
   status: executed
   timeout: null
   type: global_data_product
   upstream_blocks: []
-  uuid: load_estimator
+  uuid: data_and_count_vectorizer
 - all_upstream_blocks_executed: true
-  color: teal
+  color: null
   configuration: {}
   downstream_blocks: []
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: inference
+  name: download artifact
   retry_config: null
   status: executed
   timeout: null
-  type: custom
+  type: data_exporter
   upstream_blocks:
-  - load_estimator
-  - load_countvectorizer
-  uuid: inference
+  - register_best_model
+  - data_and_count_vectorizer
+  uuid: download_artifact
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
 conditionals: []
-created_at: '2024-07-21 22:54:59.292956+00:00'
+created_at: '2024-07-27 19:10:54.595696+00:00'
 data_integration: null
-description: online inference
+description: null
 executor_config: {}
 executor_count: 1
 executor_type: null
 extensions: {}
-name: inference pipeline sklearn
+name: register model
 notification_config: {}
 remote_variables_dir: null
 retry_config: {}
@@ -76,6 +73,6 @@ settings:
 spark_config: {}
 tags: []
 type: python
-uuid: inference_pipeline_sklearn
+uuid: register_model
 variables_dir: /home/src/mage_data/hate_speech_detector
 widgets: []
