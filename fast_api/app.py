@@ -1,10 +1,9 @@
 import requests
 import joblib
 import os
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
-from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.middleware.cors import CORSMiddleware
 
 # Modell- und Vektorisierer-Pfade
