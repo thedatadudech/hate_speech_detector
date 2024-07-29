@@ -3,7 +3,8 @@ import requests
 import os
 
 hate_speech_predict_api = os.getenv(
-    "HATE_SPEECH_PREDICT_API", "http://flask:5002/predict"
+    "HATE_SPEECH_PREDICT_API",
+    "https://hatespeech-flask.azurewebsites.net/predict",
 )
 
 
@@ -13,8 +14,12 @@ def predict_hate_speech(text):
     # Adjust the URL if your API is hosted elsewhere
     url = hate_speech_predict_api
     data = {"inputs": text}
+    headers = headers = {
+        "Content-type": "application/json",
+        "Accept": "application/json",
+    }
     print(data)
-    response = requests.post(url, json=data)
+    response = requests.post(url, json=data, headers=headers)
     if response.status_code == 200:
         prediction = response.json()["prediction"]
         return f"{prediction}"

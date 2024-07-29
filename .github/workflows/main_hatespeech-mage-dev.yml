@@ -88,12 +88,3 @@ jobs:
           slot-name: "production"
           publish-profile: ${{ secrets.AzureAppService_PublishProfile_d683ce1e2ea74692966617ddcbacb468 }}
           images: "hatespeechdetector.azurecr.io/hatespeech-mlflow:${{ github.sha }}"
-
-      - name: Deploy to Azure Web App flask
-        id: deploy-to-webapp-flask
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: "hatespeech-flask"
-          slot-name: "production"
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_fd5e4fa7902d4c81841103be8f5e2f4f }}
-          images: "hatespeechdetector.azurecr.io/hatespeech-flask:${{ github.sha }}"
