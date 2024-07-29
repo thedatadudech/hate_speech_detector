@@ -1,4 +1,3 @@
-
 from typing import Dict, Union
 
 from pandas import Series
@@ -27,4 +26,3 @@ def hyperparameter_tuning(
     best_model = tune_hyperparameters_optuna(objective)
 
     return X, y, best_model
-

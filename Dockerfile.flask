@@ -6,18 +6,19 @@ FROM python:3.11.4-slim
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app.
-COPY /flask /app
+COPY ./fast_api .
 
 # Set environment variables
-ENV MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
-ENV VECTORIZER_PATH=$VECTORIZER_PATH
+#ENV MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
+#ENV VECTORIZER_PATH=$VECTORIZER_PATH
 
 
 # Install the required packages.
-RUN pip install --no-cache-dir mlflow flask pandas requests flasgger joblib 
+RUN pip install --no-cache-dir mlflow fastapi pydantic joblib requests 
 
 # Expose port 5001 for the Flask app.
-EXPOSE 5001
+EXPOSE 80
 
 # Run app.py when the container launches.
-CMD ["python", "app.py"]
+ENTRYPOINT [ "fastapi" ] 
+CMD ["run", "app.py", "--proxy-headers", "--port", "80"]

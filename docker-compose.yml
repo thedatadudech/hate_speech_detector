@@ -37,7 +37,7 @@ services:
       context: .
       dockerfile: Dockerfile.flask
     ports:
-      - "8000:5002"
+      - "80:80"
     volumes:
       - ./data/cv:/data/cv
       - ./data/mlmodel:/data/mlmodel

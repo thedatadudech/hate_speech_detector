@@ -33,6 +33,9 @@ jobs:
           MAGE_CODE_PATH: "/home/src"
           MAGE_DATABASE_CONNECTION_URL: ${{secrets.MAGE_DATABASE_CONNECTION_URL}}
           PYTHONPATH: "/home/src/hate_speech_detector"
+          VECTORIZER_PATH: ${{secrets.VECTORIZER_PATH}}
+          BESTMODEL_PATH: ${{secrets.BESTMODEL_PATH}}
+          MLFLOW_TRACKING_URI: ${{secrets.MLFLOW_TRACKING_URI}}
 
       - name: Build Docker images with Docker Compose
         run: docker-compose -f docker-compose.yml build
@@ -49,6 +52,16 @@ jobs:
         run: |
           docker tag hate_speech_detector_mlflow:latest  hatespeechdetector.azurecr.io/hatespeech-mlflow:${{ github.sha }}
           docker push hatespeechdetector.azurecr.io/hatespeech-mlflow:${{ github.sha }}
+
+      - name: Tag and Push flask Docker image
+        run: |
+          docker tag hate_speech_detector_flask:latest  hatespeechdetector.azurecr.io/hatespeech-flask:${{ github.sha }}
+          docker push hatespeechdetector.azurecr.io/hatespeech-flask:${{ github.sha }}
+
+      - name: Tag and Push gradio Docker image
+        run: |
+          docker tag hate_speech_detector_gradio:latest  hatespeechdetector.azurecr.io/hatespeech-gradio:${{ github.sha }}
+          docker push hatespeechdetector.azurecr.io/hatespeech-gradio:${{ github.sha }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -75,3 +88,12 @@ jobs:
           slot-name: "production"
           publish-profile: ${{ secrets.AzureAppService_PublishProfile_d683ce1e2ea74692966617ddcbacb468 }}
           images: "hatespeechdetector.azurecr.io/hatespeech-mlflow:${{ github.sha }}"
+
+      - name: Deploy to Azure Web App flask
+        id: deploy-to-webapp-flask
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "hatespeech-flask"
+          slot-name: "production"
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_fd5e4fa7902d4c81841103be8f5e2f4f }}
+          images: "hatespeechdetector.azurecr.io/hatespeech-flask:${{ github.sha }}"
