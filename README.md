@@ -490,7 +490,6 @@ iface = gr.Interface(
 if __name__ == "__main__":
     iface.launch()
 
-```
 
 This comprehensive guide, including example code, outlines the integration of various technologies into the Hate Speech Detector project, from data preparation to deployment and monitoring.
 
@@ -506,7 +505,6 @@ Here is the structure of the cli_version
 └── src/
     ├── cli_version/
     │   └── ...
-
 ```
 
 and here the function that is specially created in the cli_version, it is to derive more features from a tweet and can be used for a further extension of the rather current naiv model. As this function calls also two different methods namely `extract_features` and `clean` this can be seen as a unit and integration test.

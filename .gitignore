@@ -35,7 +35,8 @@ Thumbs.db
 .venv/
 
 # Ignore data
-data/
+data/*/*
+!data/artifacts/drift_report.html
 mlruns/
 models/
 
