@@ -14,6 +14,7 @@ The rise of digital platforms has led to an increase in hate speech, negatively 
 - **Gradio**: Provides an easy-to-use library for creating web apps for machine learning models, allowing users to interact with the Hate Speech Detector in real-time.
 - **FastApi**: Serves as the backend, using this micro web framework for Python to integrate with other components and provide a RESTful API.
 - **Mage**: Orchestrates workflows, automating the machine learning lifecycle from data preparation to training and deployment, facilitating team collaboration and development process efficiency.
+- **Evidently**: Monitors model performance and data quality, offering insights into how the model performs over time and identifying potential issues early.
 
 ## Architecture
 
@@ -327,6 +328,17 @@ Conclusion
 
 By following these steps, you can successfully run a data pipeline using Mage AI. The Mage AI interface provides an intuitive way to create, configure, and monitor data pipelines, making it easier to manage complex data workflows. Modify the configurations and scripts as needed to fit
 
+## Monitoring with Evidently AI
+
+There is a sort of a drift pipeline that checks if the target data with the hatespeech categories are drifting. As the raw data is rather static, this pipeline could be extended with a sensor if new data is arriving.
+
+The pipeline makes use of the Global Data Product store and applies the Evidently drift report.
+
+The report can be found:
+![Evidently Drift Report](data/artifacts/drift_report.html)
+
+See here for the generated report:
+
 ## Model deployment with FastApi
 
 There are many ways to deploy the downloaded model artifacts. The motivation was to provide the artifacts via MLflow.
@@ -478,6 +490,194 @@ iface = gr.Interface(
 if __name__ == "__main__":
     iface.launch()
 
-```
 
 This comprehensive guide, including example code, outlines the integration of various technologies into the Hate Speech Detector project, from data preparation to deployment and monitoring.
+
+## Best Practices
+
+Another workflow of the model can be executed via the command line with slightly different process, but some functions are also used in the workflow orchestration with Mage, e.g. the cleaning function of twitter tweets.
+
+Here is the structure of the cli_version
+
+```
+/hate_speech_detector
+│
+└── src/
+    ├── cli_version/
+    │   └── ...
+```
+
+and here the function that is specially created in the cli_version, it is to derive more features from a tweet and can be used for a further extension of the rather current naiv model. As this function calls also two different methods namely `extract_features` and `clean` this can be seen as a unit and integration test.
+
+```python
+def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
+    # Example preprocessing steps
+
+    df["labels"] = df["class"].map(
+        {0: "Hate Speech", 1: "Offensive Language", 2: "No Hate and Offensive"}
+    )
+    df = df[["tweet", "labels"]]
+    df = extract_features(df, column="tweet")
+    df["tweet"] = df["tweet"].apply(clean)
+    return df
+```
+
+### Unit test and integration test
+
+```
+/hate_speech_detector
+│
+└── tests/
+    └── test_data_preparation.py
+
+```
+
+### Linter and Code formatter
+
+- Flake 8
+- Black
+
+see also pre-commit hook yaml `.pre-commit-config.yaml`
+
+### Makefile
+
+```sh
+ make install
+ make prepare
+ make model
+ make evaluate
+ make predict
+ make all
+```
+
+are for the command line version, you are free to try them out 😃
+
+```make
+install:
+	pip install -r requirements.txt
+	python setup.py install
+
+prepare:
+	python src/cli_version/data_preparation.py
+
+model:
+	python src/cli_version/model.py
+
+evaluate:
+	python src/cli_version/evaluation.py
+
+
+.PHONY: predict
+
+TEXT ?=We have to put Trump in the bullseye
+predict:
+	@echo "Predicting with text: $(TEXT)"
+	python src/predict.py --text "$(TEXT)"
+
+
+all:
+	make prepare
+	make model
+	make evaluate
+	make predict
+
+
+#Dockerize images
+mage:
+	scripts/start.sh mage
+
+mlflow:
+	scripts/start.sh mlflow
+
+mage-build:
+	scripts/start.sh mage --build
+
+mlflow-build:
+	scripts/start.sh mlflow --build
+
+flask-build:
+	scripts/start.sh flask --build
+
+gradio-build:
+	scripts/start.sh gradio --build
+
+compose-all-build:
+	scripts/start.sh --build
+
+
+
+#Cleaning section
+complete-cleaning:
+	scripts/cleaning_resources.sh
+
+
+
+#Tools section
+test:
+	pytest --disable-warnings
+
+format:
+	black .
+
+lint:
+	flake8 .
+
+pre-commit-install:
+	pre-commit install
+
+pre-commit:
+	pre-commit run --all-files
+```
+
+### Pre-Commit Hooks
+
+Additionaly to the pre-commit hooks in the `.pre-commit-config.yaml`` I created another pre- and post-commit hook to delete the password and backup the script file and after commit replace the backup again.
+You can put them also in .git/hooks/
+
+#### pre-commit hook
+
+```bash
+#!/bin/bash
+
+FILE="scripts/start.sh"
+
+if [ -f "$FILE" ]; then
+    # Backup the original file
+    cp "$FILE" "$FILE.bak"
+
+    # Replace the sensitive information with placeholders
+    sed -i '' 's/export POSTGRES_PASSWORD=.*/export POSTGRES_PASSWORD=<TODO:>/' "$FILE"
+    sed -i '' 's/export POSTGRES_HOST=.*/export POSTGRES_HOST=<TODO:>/' "$FILE"
+
+    # Stage the modified file
+    git add "$FILE"
+fi
+```
+
+#### post-commit hook
+
+```bash
+#!/bin/bash
+
+FILE="scripts/start.sh"
+BACKUP="$FILE.bak"
+
+# Restore the original file if the backup exists
+if [ -f "$BACKUP" ]; then
+    mv "$BACKUP" "$FILE"
+    git reset HEAD "$FILE"
+fi
+
+```
+
+### CI/CD pipeline
+
+You find the github actions workflows in
+
+```sh
+.github/workflows/
+
+  main_hatespeech-flask.yaml
+  main_hatespeech-gradio.yaml
+  main_hatespeech-mage-dev.yaml
+```

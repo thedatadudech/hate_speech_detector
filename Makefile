@@ -32,7 +32,7 @@ mage:
 	scripts/start.sh mage
 
 mlflow:
-	scripts/start.sh mage
+	scripts/start.sh mlflow
 
 mage-build:
 	scripts/start.sh mage --build 
@@ -69,4 +69,7 @@ lint:
 
 pre-commit-install:
 	pre-commit install
+
+pre-commit:
+	pre-commit run --all-files
 
