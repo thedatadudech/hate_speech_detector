@@ -16,7 +16,7 @@ def load_data_from_api(*args, **kwargs):
     url = "https://github.com/amankharwal/Website-data/raw/master/twitter.csv"
     response = requests.get(url)
 
-    return pd.read_csv(io.StringIO(response.text), sep=",").iloc[:1000]
+    return pd.read_csv(io.StringIO(response.text), sep=",").iloc[:20000]
 
 
 @test

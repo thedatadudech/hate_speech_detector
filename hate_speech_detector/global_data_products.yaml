@@ -11,3 +11,17 @@ model_sklearn_estimator:
   repo_path: /home/src/hate_speech_detector
   settings:
     sklearn: {}
+model_sklearn_voting:
+  object_type: pipeline
+  object_uuid: register_model_voting
+  repo_path: /home/src/hate_speech_detector
+  settings:
+    download_artifact:
+      partitions: 1
+training_data_voting:
+  object_type: pipeline
+  object_uuid: data_pipeline_voting
+  repo_path: /home/src/hate_speech_detector
+  settings:
+    build2:
+      partitions: 1

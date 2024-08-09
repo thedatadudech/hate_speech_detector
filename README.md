@@ -81,17 +81,26 @@ Here you find the relevant files for the tracking and registry:
 ├── hate_speech_detector
 │   │
 │   ├── data_exporters
-│   │   └── download_artifact.py
+│   │   ├──  download_artifact.py
+│   │   ├──  build2.py
+│   │   └──  drift_report.py
 │   │
 │   ├── data_loaders
-│   │    └── register_best_model.py
+│   │   ├── inference_voting.py
+│   │   ├── register_model_voting.py
+│   │   └── twitterloader.py
 │   └── transformers
-│   │    └── hyperparameter_optuna
-│   │         └── sklearn.py
+│   │   ├── hyperparameter_optuna
+│   │   │   └── sklearn.py
+│   │   ├── extract_features.py
+│   │   ├── sklearn_voting.py
+│   │   └── transform_data.py
 │   ├── utils
-│   │    ├── logging.py
-│   │     └── models
-│   │         └── sklearn.py
+│   │    ├── data_preparation
+│   │    │   └── sklearn.py
+│   │    ├── models
+│   │    │   └── sklearn.py
+│   │    └── logging_voting.py
 │   │
 ```
 
@@ -127,8 +136,7 @@ The project directory has the following structure: (the data folder is mounted)
     ├── mage_data/
     ├── mlmodel/
     │   └── hate_speech_detector/
-    └── cv/
-        └── hate_speech_detector/
+
 ```
 
 ### Step-by-Step Instructions
@@ -500,12 +508,14 @@ Another workflow of the model can be executed via the command line with slightly
 Here is the structure of the cli_version
 
 ```
+
 /hate_speech_detector
 │
 └── src/
-    ├── cli_version/
-    │   └── ...
-```
+├── cli_version/
+│ └── ...
+
+````
 
 and here the function that is specially created in the cli_version, it is to derive more features from a tweet and can be used for a further extension of the rather current naiv model. As this function calls also two different methods namely `extract_features` and `clean` this can be seen as a unit and integration test.
 
@@ -520,7 +530,7 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     df = extract_features(df, column="tweet")
     df["tweet"] = df["tweet"].apply(clean)
     return df
-```
+````
 
 ### Unit test and integration test
 

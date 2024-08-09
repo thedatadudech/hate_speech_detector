@@ -1,12 +1,10 @@
 from sklearn.model_selection import train_test_split
+from imblearn.over_sampling import SMOTE
+
 
 if "data_exporter" not in globals():
     from mage_ai.data_preparation.decorators import data_exporter
 
-
-from hate_speech_detector.utils.data_preparation.encoders import (
-    vectorize_tweets,
-)
 
 
 @data_exporter
@@ -22,11 +20,22 @@ def export_data(data, *args, **kwargs):
         Optionally return any object and it'll be logged and
         displayed when inspecting the block run.
     """
-    X, y, cv = vectorize_tweets(data)
+    X = data.filter(like='ft_')
+    y = data["labels"]
 
+
+    smote = SMOTE(random_state=42)
+    X_resampled, y_resampled = smote.fit_resample(X, y)
+
+
+    
+
+    
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
-    )
+      X_resampled, y_resampled, test_size=0.2, random_state=42)
+    
 
     # Specify your data exporting logic here
-    return X, y, X_train, y_train, X_test, y_test, cv
+    return X_resampled, y_resampled, X_train, y_train, X_test, y_test
+    
+  

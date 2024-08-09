@@ -29,7 +29,6 @@ def transform(data, *args, **kwargs):
         {0: "Hate Speech", 1: "Offensive Language", 2: "No Hate and Offensive"}
     )
     data = data[["tweet", "labels"]]
-    data["tweet"] = data["tweet"].apply(clean)
 
     return data
 
