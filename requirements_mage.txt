@@ -6,5 +6,6 @@ evidently==0.4.31
 optuna==3.6.1
 requests==2.32.3
 emoji==2.12.1
-imblearn==0.12.3
+imbalanced-learn==0.12.3
+
 
