@@ -1,0 +1,101 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    global_data_product:
+      uuid: training_data_voting
+  downstream_blocks:
+  - sklearn_voting
+  - sklearn_voting_pie_chart_y5
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: training_data_voting
+  retry_config: null
+  status: executed
+  timeout: null
+  type: global_data_product
+  upstream_blocks: []
+  uuid: training_data_voting
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - sklearn_voting_pie_chart_w6
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: sklearn_voting
+  retry_config: null
+  status: executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - training_data_voting
+  uuid: sklearn_voting
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2024-08-09 00:15:12.078963+00:00'
+data_integration: null
+description: null
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: model_pipeline_voting
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags: []
+type: python
+uuid: model_pipeline_voting
+variables_dir: /home/src/mage_data/hate_speech_detector
+widgets:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    buckets: '3'
+    chart_type: pie chart
+    group_by:
+    - labels
+    x: x
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: sklearn_voting_pie chart_w6
+  retry_config: null
+  status: failed
+  timeout: null
+  type: chart
+  upstream_blocks: []
+  uuid: sklearn_voting_pie_chart_w6
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    buckets: 7
+    chart_type: histogram
+    group_by:
+    - ft_sent_negative
+    x: x
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: sklearn_voting_pie chart_y5
+  retry_config: null
+  status: failed
+  timeout: null
+  type: chart
+  upstream_blocks: []
+  uuid: sklearn_voting_pie_chart_y5

@@ -8,7 +8,7 @@ if "test" not in globals():
     from mage_ai.data_preparation.decorators import test
 
 DEFAULT_EXPERIMENT_NAME = os.getenv(
-    "DEFAULT_EXPERIMENT_NAME", "hatespeech_clf_tuning_optuna"
+    "DEFAULT_EXPERIMENT_NAME", "hate_speech_voting"
 )
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
 
@@ -44,7 +44,7 @@ def load_data(*args, **kwargs):
         print(f"Best run accuracy: {best_run_accuracy}")
 
         # Check if the model with this run ID is already registered
-        model_name = "model_hatespeech_classifier"
+        model_name = "hatespeech_classifier_voting"
         registered_models = client.search_registered_models()
 
         is_registered = False
@@ -74,7 +74,7 @@ def load_data(*args, **kwargs):
         print("No runs found in the experiment.")
         return False
 
-    return True, best_model_uri
+    return True, best_model_uri, True
 
 
 @test

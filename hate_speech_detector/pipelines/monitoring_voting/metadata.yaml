@@ -2,71 +2,51 @@ blocks:
 - all_upstream_blocks_executed: true
   color: null
   configuration:
-    file_path: global_data_products/load_countvectorizer.py
-    file_source:
-      path: null
     global_data_product:
-      uuid: data_training_set_sklearn
+      uuid: training_data_voting
   downstream_blocks:
-  - inference
+  - drift_report
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: load countvectorizer
+  name: drift_reporting
   retry_config: null
   status: executed
   timeout: null
   type: global_data_product
   upstream_blocks: []
-  uuid: load_countvectorizer
+  uuid: drift_reporting
 - all_upstream_blocks_executed: true
   color: null
   configuration:
-    global_data_product:
-      uuid: model_sklearn_estimator
-  downstream_blocks:
-  - inference
-  executor_config: null
-  executor_type: local_python
-  has_callback: false
-  language: python
-  name: load_estimator
-  retry_config: null
-  status: executed
-  timeout: null
-  type: global_data_product
-  upstream_blocks: []
-  uuid: load_estimator
-- all_upstream_blocks_executed: true
-  color: teal
-  configuration: {}
+    file_source:
+      path: data_exporters/drift_report.py
   downstream_blocks: []
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: inference
+  name: drift_report
   retry_config: null
   status: executed
   timeout: null
-  type: custom
+  type: data_exporter
   upstream_blocks:
-  - load_estimator
-  - load_countvectorizer
-  uuid: inference
+  - drift_reporting
+  uuid: drift_report
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
 conditionals: []
-created_at: '2024-07-21 22:54:59.292956+00:00'
+created_at: '2024-07-29 18:32:38.341894+00:00'
 data_integration: null
-description: online inference
+description: null
 executor_config: {}
 executor_count: 1
 executor_type: null
 extensions: {}
-name: inference pipeline sklearn
+name: monitoring_voting
 notification_config: {}
 remote_variables_dir: null
 retry_config: {}
@@ -76,6 +56,6 @@ settings:
 spark_config: {}
 tags: []
 type: python
-uuid: inference_pipeline_sklearn
+uuid: monitoring_voting
 variables_dir: /home/src/mage_data/hate_speech_detector
 widgets: []
