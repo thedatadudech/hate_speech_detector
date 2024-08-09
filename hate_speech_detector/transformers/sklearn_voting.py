@@ -19,7 +19,7 @@ def hyperparameter_tuning(
     **kwargs,
 ):
 
-    X, y, X_train, y_train, X_test, y_test= training_set["build2"]
+    X, y, X_train, y_train, X_test, y_test = training_set["build2"]
 
     objective = launch_objective(X_train, y_train, X_test, y_test)
     best_model = tune_hyperparameters_optuna(objective)

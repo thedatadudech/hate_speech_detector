@@ -1,28 +1,81 @@
 import requests
 import joblib
 import os
+import re
+import emoji
+from pandas import DataFrame
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+
+def extract_tweet_features(tweet: str) -> dict:
+    # Initialize stopwords and stemmer
+
+    sentiment_analyzer = SentimentIntensityAnalyzer()
+
+    features = {}
+
+    # Text Length
+    features["ft_charcount"] = len(tweet)
+    features["ft_wordcount"] = len(tweet.split())
+
+    # Number of Hashtags
+    features["ft_hashtagcount"] = len(re.findall(r"#(\w+)", tweet))
+
+    # Number of Mentions
+    features["ft_mentioncount"] = len(re.findall(r"@(\w+)", tweet))
+
+    # Number of URLs
+    features["ft_urlcount"] = len(re.findall(r"http\S+|www\.\S+", tweet))
+
+    # Number of Emojis
+    features["ft_emojicount"] = len([c for c in tweet if c in emoji.EMOJI_DATA])
+
+    # Sentiment Score
+    sentiment_scores = sentiment_analyzer.polarity_scores(tweet)
+    features["ft_sent_compound"] = sentiment_scores["compound"]
+    features["ft_sent_positive"] = sentiment_scores["pos"]
+    features["ft_sent_neutral"] = sentiment_scores["neu"]
+    features["ft_sent_negative"] = sentiment_scores["neg"]
+
+    # Presence of Specific Words
+    keywords = [
+        "Hate",
+        "Kill",
+        "Shoot",
+        "Fuck",
+        "Motherfucker",
+        "Scumbag",
+        "Filthy",
+        "Morone",
+        "Sucker",
+        "Bitch",
+        "Cunt",
+        "Slut",
+        "Monkey",
+        "Butthole",
+        "Asshole",
+        "Dushbag",
+        "Terrorist",
+        "Nazi",
+    ]
+    for keyword in keywords:
+        features[f"ft_cont_{keyword}"] = keyword.lower() in tweet.lower()
+
+    return features
+
 
 # Modell- und Vektorisierer-Pfade
 bestmodel_path = os.getenv(
     "BESTMODEL_PATH",
-    "https://hatespeechstorage.blob.core.windows.net/"
-    "hatespeech-data/mlmodel/hate_speech_detector/best_model_fittedX.pkl"
-    "?sp=r&st=2024-07-29T00:16:18Z&se=2024-07-30T08:16:18Z&spr="
-    "https&sv=2022-11-02&sr=b&sig="
-    "n7B%2FJkuFkNVQHYZWV%2BhLJDoWrifns80UEuybp6SNBcg%3D",
-)
-print(bestmodel_path)
-vectorizer_path = os.getenv(
-    "VECTORIZER_PATH",
-    "https://hatespeechstorage.blob.core.windows.net/"
-    "hatespeech-data/cv/hate_speech_detector/cv_best_model.pkl"
-    "?sp=r&st=2024-07-29T00:14:53Z&se=2024-07-30T08:14:53Z&spr="
-    "https&sv=2022-11-02&sr=b&sig="
-    "Iy8umJUwhSqkflSkuaEyFTgGBoRr5K3Phuyp3kmTTPQ%3D",
+    "https://hatespeechstorage.blob.core.windows.net/hatespeech-data/mlmodel/"
+    "hate_speech_detector/best_model_fittedX.pkl"
+    "?sp=r&st=2024-08-09T19:59:28Z&se=2024-08-23T03:59:28Z"
+    "&spr=https&sv=2022-11-02&sr="
+    "b&sig=s091yRCR%2BgO25Z%2FMG2dLl2XbAsYX74Qslk6KHpHTlmA%3D",
 )
 
 
@@ -54,7 +107,6 @@ app.add_middleware(
 
 # Lade das Modell und den Vektorisierer
 model = load_model(bestmodel_path, "bestmodel.pkl")
-cv = load_model(vectorizer_path, "vectorizer.pkl")
 
 
 # Pydantic-Modell für die Vorhersageanforderung
@@ -71,8 +123,9 @@ def read_root():
 @app.post("/predict", response_model=dict)
 def predict(request: PredictionRequest):
     text = request.inputs
-    X = cv.transform([text]).toarray()
-    prediction = model.predict(X)
+    X = extract_tweet_features(text)
+    df = DataFrame([X])
+    prediction = model.predict(df)[0]
     return {"received_text": text, "prediction": str(prediction)}
 
 

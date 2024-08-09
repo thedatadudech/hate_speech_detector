@@ -14,7 +14,8 @@ COPY ./fast_api .
 
 
 # Install the required packages.
-RUN pip install --no-cache-dir mlflow fastapi pydantic joblib requests 
+RUN pip install --no-cache-dir mlflow==2.14.3 fastapi[standard]==0.112.0 pydantic==2.6.3 joblib requests nltk emoji==2.12.1
+RUN python3 -c "import nltk; nltk.download('stopwords'); nltk.download('vader_lexicon');"
 
 # Expose port 5001 for the Flask app.
 EXPOSE 80

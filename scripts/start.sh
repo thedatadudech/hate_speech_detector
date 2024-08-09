@@ -20,9 +20,8 @@ export DEFAULT_ARTIFACT_ROOT=/data/artifacts
 export SMTP_EMAIL=$SMTP_EMAIL=$SMTP_EMAIL  
 export SMTP_PASSWORD=$SMTP_PASSWORD
 #export VECTORIZER_PATH=/data/cv/hate_speech_detector/cv_best_model.pkl
-export VECTORIZER_PATH="https://hatespeechstorage.blob.core.windows.net/hatespeech-data/cv/hate_speech_detector/cv_best_model.pkl?sp=r&st=2024-07-29T00:14:53Z&se=2024-07-30T08:14:53Z&spr=https&sv=2022-11-02&sr=b&sig=Iy8umJUwhSqkflSkuaEyFTgGBoRr5K3Phuyp3kmTTPQ%3D"
 #export BESTMODEL_PATH=/data/mlmodel/hate_speech_detector 
-export BESTMODEL_PATH="https://hatespeechstorage.blob.core.windows.net/hatespeech-data/mlmodel/hate_speech_detector/best_model_fittedX.pkl?sp=r&st=2024-07-29T00:16:18Z&se=2024-07-30T08:16:18Z&spr=https&sv=2022-11-02&sr=b&sig=n7B%2FJkuFkNVQHYZWV%2BhLJDoWrifns80UEuybp6SNBcg%3D"
+export BESTMODEL_PATH="https://hatespeechstorage.blob.core.windows.net/hatespeech-data/mlmodel/hate_speech_detector/best_model_fittedX.pkl?sp=r&st=2024-08-09T19:59:28Z&se=2024-08-23T03:59:28Z&spr=https&sv=2022-11-02&sr=b&sig=s091yRCR%2BgO25Z%2FMG2dLl2XbAsYX74Qslk6KHpHTlmA%3D"
 
 
 echo "CHECK all Env variables"

@@ -40,7 +40,7 @@ mage-build:
 mlflow-build:
 	scripts/start.sh mlflow --build
 
-flask-build:
+fast-build:
 	scripts/start.sh flask --build
 
 gradio-build:

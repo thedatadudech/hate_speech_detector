@@ -1,12 +1,9 @@
 import os
-from typing import Dict, Optional, Tuple
+from typing import Optional, Tuple
 import pandas as pd
 
 import mlflow
-from mlflow.data import from_numpy, from_pandas
-from mlflow.models import infer_signature
 from mlflow.sklearn import log_model as log_model_sklearn
-from sklearn.base import BaseEstimator
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.neighbors import KNeighborsClassifier

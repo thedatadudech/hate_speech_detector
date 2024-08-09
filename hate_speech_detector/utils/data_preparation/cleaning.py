@@ -4,7 +4,6 @@ from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
 from nltk.sentiment import SentimentIntensityAnalyzer
 import emoji
-import nltk
 
 
 def clean(text):
@@ -73,7 +72,7 @@ def extract_tweet_features(tweet: str) -> dict:
         "Asshole",
         "Dushbag",
         "Terrorist",
-        "Nazi"
+        "Nazi",
     ]
     for keyword in keywords:
         features[f"ft_cont_{keyword}"] = keyword.lower() in tweet.lower()

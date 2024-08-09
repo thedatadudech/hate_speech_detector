@@ -53,16 +53,6 @@ jobs:
           docker tag hate_speech_detector_mlflow:latest  hatespeechdetector.azurecr.io/hatespeech-mlflow:${{ github.sha }}
           docker push hatespeechdetector.azurecr.io/hatespeech-mlflow:${{ github.sha }}
 
-      - name: Tag and Push flask Docker image
-        run: |
-          docker tag hate_speech_detector_flask:latest  hatespeechdetector.azurecr.io/hatespeech-flask:${{ github.sha }}
-          docker push hatespeechdetector.azurecr.io/hatespeech-flask:${{ github.sha }}
-
-      - name: Tag and Push gradio Docker image
-        run: |
-          docker tag hate_speech_detector_gradio:latest  hatespeechdetector.azurecr.io/hatespeech-gradio:${{ github.sha }}
-          docker push hatespeechdetector.azurecr.io/hatespeech-gradio:${{ github.sha }}
-
   deploy:
     runs-on: ubuntu-latest
     needs: build
