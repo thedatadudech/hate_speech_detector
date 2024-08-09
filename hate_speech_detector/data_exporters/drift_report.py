@@ -23,7 +23,7 @@ def monitor_model(training_data, *args, **kwargs):
         Optionally return any object and it'll be logged and
         displayed when inspecting the block run.
     """
-    _, y, _, _, _, _, _ = training_data["build"]
+    _, y, _, _, _, _ = training_data["build2"]
     y_df = pd.DataFrame({"target": y})
     data_drift_report = Report(
         metrics=[
@@ -32,8 +32,8 @@ def monitor_model(training_data, *args, **kwargs):
     )
 
     data_drift_report.run(
-        current_data=y_df.iloc[:500],
-        reference_data=y_df.iloc[500:],
+        current_data=y_df.iloc[:10000],
+        reference_data=y_df.iloc[10000:],
         column_mapping=None,
     )
     data_drift_report

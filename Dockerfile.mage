@@ -28,6 +28,6 @@ COPY requirements_mage.txt ./requirements.txt
 RUN pip3 install -r ./requirements.txt
 ENV PYTHONPATH="${MAGE_CODE_PATH}"
 
-RUN python3 -c "import nltk; nltk.download('stopwords');"
+RUN python3 -c "import nltk; nltk.download('stopwords'); nltk.download('vader_lexicon');"
 
 CMD ["/bin/sh", "-c", "/app/run_app.sh"]

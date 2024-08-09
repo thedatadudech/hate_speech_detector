@@ -3,50 +3,69 @@ blocks:
   color: null
   configuration:
     global_data_product:
-      uuid: data_training_set_sklearn
+      uuid: training_data_voting
   downstream_blocks:
-  - drift_report
+  - download_artifact
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: load trainingdata
+  name: training_data_voting
   retry_config: null
   status: executed
   timeout: null
   type: global_data_product
   upstream_blocks: []
-  uuid: load_trainingdata
+  uuid: training_data_voting
 - all_upstream_blocks_executed: true
   color: null
   configuration:
     file_source:
-      path: data_exporters/drift_report.py
+      path: data_loaders/register_model_voting.py
+  downstream_blocks:
+  - download_artifact
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: register_model_voting
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: register_model_voting
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: data_exporters/download_artifact.py
   downstream_blocks: []
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
-  name: drift_report
+  name: download_artifact
   retry_config: null
   status: executed
   timeout: null
   type: data_exporter
   upstream_blocks:
-  - load_trainingdata
-  uuid: drift_report
+  - register_model_voting
+  - training_data_voting
+  uuid: download_artifact
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
 conditionals: []
-created_at: '2024-07-29 18:32:38.341894+00:00'
+created_at: '2024-08-09 01:06:41.984250+00:00'
 data_integration: null
 description: null
 executor_config: {}
 executor_count: 1
 executor_type: null
 extensions: {}
-name: mmonitoring pipeline
+name: register_model_voting
 notification_config: {}
 remote_variables_dir: null
 retry_config: {}
@@ -56,6 +75,6 @@ settings:
 spark_config: {}
 tags: []
 type: python
-uuid: mmonitoring_pipeline
+uuid: register_model_voting
 variables_dir: /home/src/mage_data/hate_speech_detector
 widgets: []

@@ -1,0 +1,158 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: data_loaders/twitterloader.py
+  downstream_blocks:
+  - transform_data
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: twitterloader
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: twitterloader
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: transformers/transform_data.py
+  downstream_blocks:
+  - extract_features
+  - transform_data_pie_chart_x9
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: transform_data
+  retry_config: null
+  status: executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - twitterloader
+  uuid: transform_data
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - build2
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: extract_features
+  retry_config: null
+  status: executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - transform_data
+  uuid: extract_features
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - build2_pie_chart_s3
+  - twitterloader_pie_chart_r9
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: build2
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - extract_features
+  uuid: build2
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2024-08-09 00:01:14.095280+00:00'
+data_integration: null
+description: null
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: data_pipeline_voting
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags: []
+type: python
+uuid: data_pipeline_voting
+variables_dir: /home/src/mage_data/hate_speech_detector
+widgets:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    buckets: '3'
+    chart_type: histogram
+    group_by:
+    - ft_sent_negative
+    x: x
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: twitterloader_pie chart_r9
+  retry_config: null
+  status: failed
+  timeout: null
+  type: chart
+  upstream_blocks: []
+  uuid: twitterloader_pie_chart_r9
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    buckets: '3'
+    chart_type: pie chart
+    group_by:
+    - labels
+    width_percentage: '0.5'
+    x: x
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: transform_data_pie chart_x9
+  retry_config: null
+  status: failed
+  timeout: null
+  type: chart
+  upstream_blocks:
+  - transform_data
+  uuid: transform_data_pie_chart_x9
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    buckets: 7
+    chart_type: pie chart
+    x: x
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: build2_pie chart_s3
+  retry_config: null
+  status: executed
+  timeout: null
+  type: chart
+  upstream_blocks: []
+  uuid: build2_pie_chart_s3
