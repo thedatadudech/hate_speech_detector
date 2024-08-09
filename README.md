@@ -28,6 +28,38 @@ The Hate Speech Detector's architecture is modular, ensuring flexibility and sca
 
 ## Cloud Infrastructure
 
+### Overall architecture
+
+<img src="documentation/assets/hatespeech.drawio.png" alt="Folder Structure" width="800" height="600">
+
+### Current Deployment for MLOps Zoomcamp
+
+In order to check the deployment of the project, look at the following pages. Please admit that it might take a while as I choose either the Free plan or low cost plan.
+
+#### Mage
+
+https://hatespeech-mage-dev.azurewebsites.net/
+
+<img src="documentation/assets/mage_service_app.png" alt="Folder Structure" width="400" height="200">
+
+#### MLflow
+
+https://hatespeech-mlflow.azurewebsites.net/
+
+<img src="documentation/assets/mlflow_service_app.png" alt="Folder Structure" width="400" height="200">
+
+#### FastAPI (kept name flask)
+
+https://hatespeech-flask.azurewebsites.net/
+
+<img src="documentation/assets/flask_service_app.png" alt="Folder Structure" width="400" height="200">
+
+#### Gradio
+
+https://hatespeech-gradio.azurewebsites.net/
+
+<img src="documentation/assets/gradio_service_app.png" alt="Folder Structure" width="400" height="200">
+
 ### Terraform
 
 ### Prerequisites
@@ -178,7 +210,7 @@ COPY requirements_mage.txt ./requirements.txt
 RUN pip3 install -r ./requirements.txt
 ENV PYTHONPATH="${MAGE_CODE_PATH}"
 
-RUN python3 -c "import nltk; nltk.download('stopwords');"
+RUN python3 -c "import nltk; nltk.download('stopwords'); nltk.download('vader_lexicon');"
 
 CMD ["/bin/sh", "-c", "/app/run_app.sh"]
 ```
@@ -190,8 +222,6 @@ Ensure your `docker-compose.yml` file includes the necessary services and config
 #### docker-compose.yml
 
 ```yaml
-version: "3.8"
-
 services:
   ...
 
@@ -208,7 +238,6 @@ services:
       - ./hate_speech_detector:/home/src/hate_speech_detector
       - ./data/artifacts:/data/artifacts
       - ./data/mlmodel/hate_speech_detector:/data/best_model/model
-      - ./data/cv/hate_speech_detector:/data/cv
     networks:
       - app-network
 ...
@@ -343,9 +372,7 @@ There is a sort of a drift pipeline that checks if the target data with the hate
 The pipeline makes use of the Global Data Product store and applies the Evidently drift report.
 
 The report can be found:
-![Evidently Drift Report](data/artifacts/drift_report.html)
-
-See here for the generated report:
+`/data/artifacts/drift_report.htm`
 
 ## Model deployment with FastApi
 
@@ -367,29 +394,81 @@ The model is loaded then from the **FastApi** prediction endpoint. Also the vect
 import requests
 import joblib
 import os
-from fastapi import FastAPI, Request
+import re
+import emoji
+from pandas import DataFrame
+from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
-from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.middleware.cors import CORSMiddleware
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+
+def extract_tweet_features(tweet: str) -> dict:
+    # Initialize stopwords and stemmer
+
+    sentiment_analyzer = SentimentIntensityAnalyzer()
+
+    features = {}
+
+    # Text Length
+    features["ft_charcount"] = len(tweet)
+    features["ft_wordcount"] = len(tweet.split())
+
+    # Number of Hashtags
+    features["ft_hashtagcount"] = len(re.findall(r"#(\w+)", tweet))
+
+    # Number of Mentions
+    features["ft_mentioncount"] = len(re.findall(r"@(\w+)", tweet))
+
+    # Number of URLs
+    features["ft_urlcount"] = len(re.findall(r"http\S+|www\.\S+", tweet))
+
+    # Number of Emojis
+    features["ft_emojicount"] = len([c for c in tweet if c in emoji.EMOJI_DATA])
+
+    # Sentiment Score
+    sentiment_scores = sentiment_analyzer.polarity_scores(tweet)
+    features["ft_sent_compound"] = sentiment_scores["compound"]
+    features["ft_sent_positive"] = sentiment_scores["pos"]
+    features["ft_sent_neutral"] = sentiment_scores["neu"]
+    features["ft_sent_negative"] = sentiment_scores["neg"]
+
+    # Presence of Specific Words
+    keywords = [
+        "Hate",
+        "Kill",
+        "Shoot",
+        "Fuck",
+        "Motherfucker",
+        "Scumbag",
+        "Filthy",
+        "Morone",
+        "Sucker",
+        "Bitch",
+        "Cunt",
+        "Slut",
+        "Monkey",
+        "Butthole",
+        "Asshole",
+        "Dushbag",
+        "Terrorist",
+        "Nazi",
+    ]
+    for keyword in keywords:
+        features[f"ft_cont_{keyword}"] = keyword.lower() in tweet.lower()
+
+    return features
+
 
 # Modell- und Vektorisierer-Pfade
 bestmodel_path = os.getenv(
     "BESTMODEL_PATH",
-    "https://hatespeechstorage.blob.core.windows.net/"
-    "hatespeech-data/mlmodel/hate_speech_detector/best_model_fittedX.pkl"
-    "?sp=r&st=2024-07-29T00:16:18Z&se=2024-07-30T08:16:18Z&spr="
-    "https&sv=2022-11-02&sr=b&sig="
-    "n7B%2FJkuFkNVQHYZWV%2BhLJDoWrifns80UEuybp6SNBcg%3D",
-)
-print(bestmodel_path)
-vectorizer_path = os.getenv(
-    "VECTORIZER_PATH",
-    "https://hatespeechstorage.blob.core.windows.net/"
-    "hatespeech-data/cv/hate_speech_detector/cv_best_model.pkl"
-    "?sp=r&st=2024-07-29T00:14:53Z&se=2024-07-30T08:14:53Z&spr="
-    "https&sv=2022-11-02&sr=b&sig="
-    "Iy8umJUwhSqkflSkuaEyFTgGBoRr5K3Phuyp3kmTTPQ%3D",
+    "https://hatespeechstorage.blob.core.windows.net/hatespeech-data/mlmodel/"
+    "hate_speech_detector/best_model_fittedX.pkl"
+    "?sp=r&st=2024-08-09T19:59:28Z&se=2024-08-23T03:59:28Z"
+    "&spr=https&sv=2022-11-02&sr="
+    "b&sig=s091yRCR%2BgO25Z%2FMG2dLl2XbAsYX74Qslk6KHpHTlmA%3D",
 )
 
 
@@ -421,7 +500,6 @@ app.add_middleware(
 
 # Lade das Modell und den Vektorisierer
 model = load_model(bestmodel_path, "bestmodel.pkl")
-cv = load_model(vectorizer_path, "vectorizer.pkl")
 
 
 # Pydantic-Modell für die Vorhersageanforderung
@@ -438,8 +516,9 @@ def read_root():
 @app.post("/predict", response_model=dict)
 def predict(request: PredictionRequest):
     text = request.inputs
-    X = cv.transform([text]).toarray()
-    prediction = model.predict(X)
+    X = extract_tweet_features(text)
+    df = DataFrame([X])
+    prediction = model.predict(df)[0]
     return {"received_text": text, "prediction": str(prediction)}
 
 
@@ -447,6 +526,7 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=80)
+
 
 ```
 
@@ -497,7 +577,7 @@ iface = gr.Interface(
 # Launch the Gradio app
 if __name__ == "__main__":
     iface.launch()
-
+```
 
 This comprehensive guide, including example code, outlines the integration of various technologies into the Hate Speech Detector project, from data preparation to deployment and monitoring.
 
@@ -515,7 +595,7 @@ Here is the structure of the cli_version
 ├── cli_version/
 │ └── ...
 
-````
+```
 
 and here the function that is specially created in the cli_version, it is to derive more features from a tweet and can be used for a further extension of the rather current naiv model. As this function calls also two different methods namely `extract_features` and `clean` this can be seen as a unit and integration test.
 
@@ -530,7 +610,7 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     df = extract_features(df, column="tweet")
     df["tweet"] = df["tweet"].apply(clean)
     return df
-````
+```
 
 ### Unit test and integration test
 

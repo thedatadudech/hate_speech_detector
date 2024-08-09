@@ -23,25 +23,27 @@ resource "azurerm_container_registry" "hatespeechctn" {
   admin_enabled       = true
 }
 
-resource "azurerm_postgresql_server" "hatespeech_pg" {
-  name                = "hatespeech-pg"
-  location            = azurerm_resource_group.hatespeech_rg.location
-  resource_group_name = azurerm_resource_group.hatespeech_rg.name
+# Azure PostgreSQL Flexible Server
+resource "azurerm_postgresql_flexible_server" "hatespeech_flexible_pg" {
+  name                          = "hatespeech-flexible-pg"
+  location                      = azurerm_resource_group.hatespeech_rg.location
+  resource_group_name           = azurerm_resource_group.hatespeech_rg.name
+  version                       = "12"  
+  public_network_access_enabled = true
+  administrator_login           = "psqladmin"
+  administrator_password        = "H@Sh1CoR3!"
+  zone                          = "1"
 
-  sku_name            = "B_Gen5_1"
-  storage_mb          = 5120
-  backup_retention_days = 7
-  administrator_login = "psqladminun"
-  administrator_login_password = "H@tespeechP@ssw0rd!"
+  storage_mb   = 32768
+  storage_tier = "P30"
 
-  version             = "11"
-  ssl_enforcement_enabled     = true
+  sku_name = "B_Standard_B1ms"
 }
 
-resource "azurerm_postgresql_database" "hatespeechdb" {
-  name                = "hatespeechdb"
-  resource_group_name = azurerm_resource_group.hatespeech_rg.name
-  server_name         = azurerm_postgresql_server.hatespeech_pg.name
-  charset             = "UTF8"
-  collation           = "English_United States.1252"
+
+resource "azurerm_postgresql_flexible_server_database" "hatespeechdb" {
+  name        = "hatespeechdb"
+  server_id   = azurerm_postgresql_flexible_server.hatespeech_flexible_pg.id  # Use .id instead of .name
+  charset     = "UTF8"  
 }
+

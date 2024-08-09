@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   mlflow:
     env_file:
@@ -27,7 +25,6 @@ services:
       - ./hate_speech_detector:/home/src/hate_speech_detector
       - ./data/artifacts:/data/artifacts
       - ./data/mlmodel/hate_speech_detector:/data/best_model/model
-      - ./data/cv/hate_speech_detector:/data/cv
     networks:
       - app-network
   flask:
